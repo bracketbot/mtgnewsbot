@@ -89,7 +89,8 @@
         "Deck Tech: #deckVariation#",
         "Deck of the Day: #deckVariation#",
         "Winning at #format# with #deckVariation#",
-        "Preparing for #tournament# with #deckVariation#"
+        "Preparing for #tournament# with #deckVariation#",
+         "#format# #dynamicDayOfWeek#: #deckVariation# (Deck Tech and [_topic:Matches,#gameConcept.capitalizeAll# Guide]#_topic#)"
     ],
     "playguide": [
         "CLASSIC STRATEGY: [_prefix:The Philosophy of,It's All About the]#_prefix# [_thing:#massNoun#,#pluralNoun#,#abstractNoun#,#nouns#]#_thing.capitalizeAll#, by #pro.capitalize#",

@@ -50,6 +50,20 @@ class Headline {
 	}
 }
 
+const dynamicValueParsers = {
+	dayOfTheWeek: () => new Date().toLocaleString('en-us', { weekday: 'long' })
+};
+
+function parseDynamicValues(message, dynamicTags) {
+	[].concat(dynamicTags).forEach(tag => {
+		if (!dynamicValueParsers[tag.name]) {
+			throw new Error('Dynamic tag "' + tag.name + '" not recognized.');
+		}
+		message = message.replace(tag.rawTag, dynamicValueParsers[tag.name](tag.rawTag));		
+	});
+	return message;
+}
+
 function parseMessage(message) {
 	let tags = undefined;
 	let text = message;
@@ -59,14 +73,24 @@ function parseMessage(message) {
 		tags = {};
 		match.forEach(match => {
 			const tag = match.match(/\{(\w+)\s/)[1];
-			if (!tags[tag]) {
-				tags[tag] = match.match(/(\w+=".*?")/g).reduce((result, next) => {
+			const parsedTag = match.match(/(\w+=".*?")/g).reduce((result, next) => {
 					let key = next.match(/(\w+)=/)[1];
 					let value = next.match(/="(.*)"/)[1];
 					result[key] = value;
 					return result;
-				}, {});
+				}, { rawTag: match });
+	
+			if (!tags[tag]) {
+				tags[tag] = parsedTag;
+			} else {
+				tags[tag] = [tags[tag]];
+				tags[tag].push(parsedTag);
 			}
+
+			if (tags['dynamicValue']) {
+				message = parseDynamicValues(message, tags['dynamicValue']);
+			}
+
 			text = message.replace(match,'');
 		});
 
